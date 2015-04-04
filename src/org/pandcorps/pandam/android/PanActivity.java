@@ -62,6 +62,7 @@ public abstract class PanActivity extends Activity {
         Iotil.setInputStreamFactory(new AndroidInputStreamFactory());
         Iotil.setResourceChecker(new AndroidResourceChecker());
         Iotil.setResourceDeleter(new AndroidResourceDeleter());
+        Iotil.setResourceLister(new AndroidResourceLister());
         
         setSize();
         setContentView(view);
@@ -137,6 +138,13 @@ public abstract class PanActivity extends Activity {
 		@Override
 		public final boolean delete(final String location) {
 			return deleteFile(location);
+		}
+	}
+	
+	private final class AndroidResourceLister implements ResourceLister {
+		@Override
+		public final String[] list() {
+			return getFilesDir().list();
 		}
 	}
 	
