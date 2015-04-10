@@ -42,6 +42,7 @@ public class AndroidPangine extends GlPangine {
 		Pangine.engine = this;
 		engine = this;
 		audio = new AndroidPanaudio();
+		touchYInverted = true;
 	}
 	
 	@Override
@@ -70,7 +71,7 @@ public class AndroidPangine extends GlPangine {
 		/*if (isCloseRequested()) {
 			exit();
 		}*/
-    	stepTouch();
+    	//stepTouch();
 	}
     
     @Override
