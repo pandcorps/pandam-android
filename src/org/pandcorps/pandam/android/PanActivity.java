@@ -52,7 +52,8 @@ public abstract class PanActivity extends Activity {
 		new AndroidPangine();
 		super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		init();
         view = new PanSurfaceView(this);
         view.setRenderer(new PanRenderer());
         view.setRenderMode(PanSurfaceView.RENDERMODE_CONTINUOUSLY);
@@ -66,6 +67,14 @@ public abstract class PanActivity extends Activity {
         
         setSize();
         setContentView(view);
+	}
+	
+	private final void init() {
+		try {
+			new NavigationHider().init(getWindow());
+		} catch (final Throwable e) {
+			// Should be an older Android version that doesn't have a navigation bar
+		}
 	}
 	
 	private final void setSize() {
@@ -98,6 +107,7 @@ public abstract class PanActivity extends Activity {
 	
 	@Override
 	protected final void onResume() {
+		init();
 		super.onResume();
 		view.onResume();
 	}
