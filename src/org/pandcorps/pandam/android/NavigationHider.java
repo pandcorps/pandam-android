@@ -27,9 +27,12 @@ import android.view.*;
 public final class NavigationHider implements WindowInitializer {
 	private final static int SYSTEM_UI_FLAG_HIDE_NAVIGATION = 2; // View.SYSTEM_UI_FLAG_HIDE_NAVIGATION; // API level 14
 	private final static int SYSTEM_UI_FLAG_FULLSCREEN = 4; // View.SYSTEM_UI_FLAG_FULLSCREEN; // API level 16
+	private final static int SYSTEM_UI_FLAG_IMMERSIVE = 2048; // View.SYSTEM_UI_FLAG_IMMERSIVE; // API level 19
+	private final static int SYSTEM_UI_FLAG_IMMERSIVE_STICKY = 4096; // View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY; // API level 19
 	
 	@Override
 	public final void init(final Window window) {
-		window.getDecorView().setSystemUiVisibility(SYSTEM_UI_FLAG_HIDE_NAVIGATION | SYSTEM_UI_FLAG_FULLSCREEN); // API level 11
+		window.getDecorView().setSystemUiVisibility(SYSTEM_UI_FLAG_HIDE_NAVIGATION | SYSTEM_UI_FLAG_FULLSCREEN
+				| SYSTEM_UI_FLAG_IMMERSIVE | SYSTEM_UI_FLAG_IMMERSIVE_STICKY); // API level 11
 	}
 }
