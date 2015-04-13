@@ -29,6 +29,7 @@ import android.os.*;
 import android.app.*;
 import android.content.*;
 import android.content.res.*;
+import android.graphics.*;
 import android.util.*;
 import android.view.*;
 import org.pandcorps.core.*;
@@ -81,6 +82,17 @@ public abstract class PanActivity extends Activity {
 		if (AndroidPangine.desktopWidth > 0) {
 			return;
 		}
+        try {
+        	final Point size = new Point();
+            getWindowManager().getDefaultDisplay().getRealSize(size);
+            AndroidPangine.desktopWidth = size.x;
+            AndroidPangine.desktopHeight = size.y;
+            if (AndroidPangine.desktopWidth > 0) {
+            	return;
+            }
+        } catch (final Throwable e) {
+            // Just try a technique below
+        }
         final int w = view.getWidth();
         if (w > 0) {
         	AndroidPangine.desktopWidth = w;
