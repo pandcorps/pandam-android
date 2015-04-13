@@ -25,16 +25,19 @@ package org.pandcorps.pandam.android;
 import android.view.*;
 
 public final class NavigationHider implements WindowInitializer {
-	private final static int SYSTEM_UI_FLAG_HIDE_NAVIGATION = 2; // View.SYSTEM_UI_FLAG_HIDE_NAVIGATION; // API level 14
-	private final static int SYSTEM_UI_FLAG_FULLSCREEN = 4; // View.SYSTEM_UI_FLAG_FULLSCREEN; // API level 16
-	private final static int SYSTEM_UI_FLAG_IMMERSIVE = 2048; // View.SYSTEM_UI_FLAG_IMMERSIVE; // API level 19
-	private final static int SYSTEM_UI_FLAG_IMMERSIVE_STICKY = 4096; // View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY; // API level 19
+	private final static int HIDE_NAVIGATION = 2; // View.SYSTEM_UI_FLAG_HIDE_NAVIGATION; // API level 14
+	private final static int FULLSCREEN = 4; // View.SYSTEM_UI_FLAG_FULLSCREEN; // API level 16
+	private final static int LAYOUT_HIDE_NAVIGATION = 512; // View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION; // API level 16
+	private final static int LAYOUT_FULLSCREEN = 1024; // View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN; // API level 16
+	private final static int IMMERSIVE = 2048; // View.SYSTEM_UI_FLAG_IMMERSIVE; // API level 19
+	private final static int IMMERSIVE_STICKY = 4096; // View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY; // API level 19
+	// View.SYSTEM_UI_FLAG_LAYOUT_STABLE
 	
 	@Override
 	public final void init(final Window window) {
 		final View view = window.getDecorView();
-		view.setSystemUiVisibility(SYSTEM_UI_FLAG_HIDE_NAVIGATION | SYSTEM_UI_FLAG_FULLSCREEN
-				| SYSTEM_UI_FLAG_IMMERSIVE | SYSTEM_UI_FLAG_IMMERSIVE_STICKY); // API level 11
+		view.setSystemUiVisibility(HIDE_NAVIGATION | FULLSCREEN | LAYOUT_HIDE_NAVIGATION | LAYOUT_FULLSCREEN
+				| IMMERSIVE | IMMERSIVE_STICKY); // API level 11
 		view.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
 			@Override public final void onSystemUiVisibilityChange(final int visibility) {
 				init(PanActivity.activity.getWindow());
