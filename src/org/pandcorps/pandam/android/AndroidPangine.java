@@ -65,6 +65,11 @@ public class AndroidPangine extends GlPangine {
     @Override
 	protected void initInput() throws Exception {
 	}
+    
+    @Override
+	protected final void initScreen() {
+    	PanActivity.activity.init();
+	}
 
     @Override
 	protected void stepControl() throws Exception {

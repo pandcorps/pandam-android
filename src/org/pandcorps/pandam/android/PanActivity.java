@@ -70,7 +70,7 @@ public abstract class PanActivity extends Activity {
         setContentView(view);
 	}
 	
-	private final void init() {
+	protected final void init() {
 		try {
 			new NavigationHider().init(getWindow());
 		} catch (final Throwable e) {
@@ -84,7 +84,7 @@ public abstract class PanActivity extends Activity {
 		}
         try {
         	final Point size = new Point();
-            getWindowManager().getDefaultDisplay().getRealSize(size);
+            getWindowManager().getDefaultDisplay().getRealSize(size); // API level 17
             AndroidPangine.desktopWidth = size.x;
             AndroidPangine.desktopHeight = size.y;
             if (AndroidPangine.desktopWidth > 0) {

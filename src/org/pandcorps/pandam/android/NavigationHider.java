@@ -32,7 +32,12 @@ public final class NavigationHider implements WindowInitializer {
 	
 	@Override
 	public final void init(final Window window) {
-		window.getDecorView().setSystemUiVisibility(SYSTEM_UI_FLAG_HIDE_NAVIGATION | SYSTEM_UI_FLAG_FULLSCREEN
+		final View view = window.getDecorView();
+		view.setSystemUiVisibility(SYSTEM_UI_FLAG_HIDE_NAVIGATION | SYSTEM_UI_FLAG_FULLSCREEN
 				| SYSTEM_UI_FLAG_IMMERSIVE | SYSTEM_UI_FLAG_IMMERSIVE_STICKY); // API level 11
+		view.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
+			@Override public final void onSystemUiVisibilityChange(final int visibility) {
+				init(PanActivity.activity.getWindow());
+			}});
 	}
 }
