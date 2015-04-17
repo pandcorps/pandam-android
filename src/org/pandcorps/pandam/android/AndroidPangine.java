@@ -29,6 +29,8 @@ import org.pandcorps.core.*;
 import org.pandcorps.pandam.*;
 import org.pandcorps.pandam.impl.*;
 
+import android.content.pm.*;
+
 public class AndroidPangine extends GlPangine {
 	protected static AndroidPangine engine = null;
 	protected static PanActivity context = null;
@@ -68,7 +70,7 @@ public class AndroidPangine extends GlPangine {
     
     @Override
 	protected final void initScreen() {
-    	PanActivity.activity.init();
+    	context.init();
 	}
 
     @Override
@@ -83,6 +85,11 @@ public class AndroidPangine extends GlPangine {
     public final boolean isTouchSupported() {
     	return true;
     }
+    
+    @Override
+  	public final boolean isMultiTouchSupported() {
+  	    return context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN_MULTITOUCH);
+  	}
     
     //public final void playMusic(/*final*/ String loc) {
     	/*InputStream in = null;
