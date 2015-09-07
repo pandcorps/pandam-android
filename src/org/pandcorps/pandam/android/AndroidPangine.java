@@ -56,6 +56,11 @@ public class AndroidPangine extends GlPangine {
     public final int getDesktopHeight() {
     	return desktopHeight;
     }
+    
+    @Override
+    protected final boolean getDefaultFullScreeen() {
+    	return true;
+    }
 
     @Override
     protected final void initDisplay() throws Exception {

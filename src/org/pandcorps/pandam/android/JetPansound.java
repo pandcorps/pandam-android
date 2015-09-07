@@ -28,13 +28,18 @@ import android.media.*;
 
 public final class JetPansound extends Pansound {
 	protected static JetPlayer jetPlayer = null;
+	private final String loc;
 	private final String fileName;
 	
-	protected JetPansound(String loc) {
-    	try {
-    		loc = loc.substring(0, loc.length() - 3) + "jet";
-    		fileName = AndroidPangine.copyResourceToFile(loc).fileName;
-    	} catch (final Exception e) {
+	protected JetPansound(final String loc) {
+		this.loc = loc.substring(0, loc.length() - 3) + "jet";
+		fileName = copyResourceToFile();
+	}
+	
+	private final String copyResourceToFile() {
+		try {
+			return AndroidPangine.copyResourceToFile(loc).fileName;
+		} catch (final Exception e) {
     		throw Panception.get(e);
     	}
 	}
@@ -55,7 +60,10 @@ public final class JetPansound extends Pansound {
     		jetPlayer = JetPlayer.getJetPlayer();
     	}
 		if (!jetPlayer.loadJetFile(fileName)) {
-			throw new Panception("Failed to load Jet file " + fileName);
+			copyResourceToFile(); // Maybe cache got cleared, try reloading
+			if (!jetPlayer.loadJetFile(fileName)) {
+				throw new Panception("Failed to load Jet file " + fileName);
+			}
 		}
 		if (!jetPlayer.queueJetSegment(0, -1, repeatCount, 0, 0, (byte) 0)) {
 			throw new Panception("Failed to queue Jet segment");
