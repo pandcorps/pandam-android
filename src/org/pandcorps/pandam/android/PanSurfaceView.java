@@ -68,7 +68,10 @@ public class PanSurfaceView extends GLSurfaceView {
 	}
 	
 	private final void addTouchEvent(final byte type, final MotionEvent event, final int index) {
-		AndroidPangine.engine.addTouchEvent(event.getPointerId(index), type, event.getX(index), event.getY(index));
+		// Tested on a tablet where event.getY did not account for navigation bar
+		final int off = AndroidPangine.engine.getDesktopHeight() - getBottom();
+		//AndroidPangine.engine.addTouchEvent(event.getPointerId(index), type, event.getX(index), event.getY(index));
+		AndroidPangine.engine.addTouchEvent(event.getPointerId(index), type, event.getX(index), event.getRawY() + off);
 	}
 	
 	// Input events can also be handled in activity
