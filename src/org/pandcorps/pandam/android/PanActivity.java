@@ -53,7 +53,8 @@ public abstract class PanActivity extends Activity {
 		new AndroidPangine();
 		super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        final int flags = WindowManager.LayoutParams.FLAG_FULLSCREEN; // | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN;
+        getWindow().setFlags(flags, flags);
 		init();
         view = new PanSurfaceView(this);
         view.setRenderer(new PanRenderer());
@@ -67,12 +68,13 @@ public abstract class PanActivity extends Activity {
         Iotil.setResourceLister(new AndroidResourceLister());
         
         setSize();
+        setTopOffset();
         setContentView(view);
 	}
 	
 	protected final void init() {
 		try {
-			new NavigationHider().init(getWindow());
+			((WindowInitializer) Reftil.newInstance("org.pandcorps.pandam.android.NavigationHider")).init(getWindow());
 		} catch (final Throwable e) {
 			// Should be an older Android version that doesn't have a navigation bar
 		}
@@ -109,6 +111,44 @@ public abstract class PanActivity extends Activity {
         		}
         	}
         }
+	}
+	
+	private final static boolean isSet(final String flagClassName, final boolean def) {
+		try {
+			return ((PanFlag) Reftil.newInstance(flagClassName)).isSet();
+		} catch (final Throwable e) {
+			return def;
+		}
+	}
+	
+	protected final static boolean isHideNavigationSafe() {
+		return Build.VERSION.SDK_INT >= 19;
+	}
+	
+	private final void setTopOffset() {
+		if (isHideNavigationSafe()) {
+			return;
+		//} else if (KeyCharacterMap.deviceHasKey(KeyEvent.KEYCODE_BACK)) {
+			// Tested this on a tablet that returned true for a navigation bar back button instead of a real one
+		//	return;
+		} else if (isSet("org.pandcorps.pandam.android.MenuKeyFlag", true)) {
+			return;
+		}
+		calculateTopOffset();
+		AndroidPangine.engine.setZoomChangeHandler(new Runnable() {
+			@Override public final void run() {
+				calculateTopOffset();
+			}});
+	}
+	
+	private final void calculateTopOffset() {
+		final int vh = view.getHeight(), off;
+		if (vh >= 0) {
+			off = AndroidPangine.engine.getDesktopHeight() - vh;
+		} else {
+			off = 12 * Math.round(AndroidPangine.engine.getZoom());
+		}
+		AndroidPangine.engine.setTopOffset(off);
 	}
 
 	@Override

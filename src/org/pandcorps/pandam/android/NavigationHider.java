@@ -22,9 +22,11 @@ POSSIBILITY OF SUCH DAMAGE.
 */
 package org.pandcorps.pandam.android;
 
+import android.os.*;
 import android.view.*;
 
 public final class NavigationHider implements WindowInitializer {
+	//private final static int LOW_PROFILE = 1; // View.SYSTEM_UI_FLAG_LOW_PROFILE; // API level 14
 	private final static int HIDE_NAVIGATION = 2; // View.SYSTEM_UI_FLAG_HIDE_NAVIGATION; // API level 14
 	private final static int FULLSCREEN = 4; // View.SYSTEM_UI_FLAG_FULLSCREEN; // API level 16
 	private final static int LAYOUT_HIDE_NAVIGATION = 512; // View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION; // API level 16
@@ -35,12 +37,31 @@ public final class NavigationHider implements WindowInitializer {
 	
 	@Override
 	public final void init(final Window window) {
+		if (Build.VERSION.SDK_INT < 16) {
+			return;
+		}
+		final boolean navSafe = PanActivity.isHideNavigationSafe();
+		int vis = FULLSCREEN | LAYOUT_HIDE_NAVIGATION | LAYOUT_FULLSCREEN | IMMERSIVE | IMMERSIVE_STICKY;
+		if (navSafe) {
+			// This breaks first touch event on old devices and is immediately cleared after touch
+			vis |= HIDE_NAVIGATION;
+		//} else {
+		//	vis |= LOW_PROFILE;
+		}
 		final View view = window.getDecorView();
-		view.setSystemUiVisibility(HIDE_NAVIGATION | FULLSCREEN | LAYOUT_HIDE_NAVIGATION | LAYOUT_FULLSCREEN
-				| IMMERSIVE | IMMERSIVE_STICKY); // API level 11
-		view.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
-			@Override public final void onSystemUiVisibilityChange(final int visibility) {
-				init(PanActivity.activity.getWindow());
-			}});
+		if (view.getSystemUiVisibility() != vis) {
+			view.setSystemUiVisibility(vis); // API level 11
+		}
+		if (navSafe) {
+			// This seems to break onTouchEvent for older devices but not newer ones
+			final PanActivity activity = PanActivity.activity;
+			activity.runOnUiThread(new Runnable() {
+				@Override public final void run() {
+					view.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
+						@Override public final void onSystemUiVisibilityChange(final int visibility) {
+							init(activity.getWindow());
+						}});
+				}});
+		}
 	}
 }
