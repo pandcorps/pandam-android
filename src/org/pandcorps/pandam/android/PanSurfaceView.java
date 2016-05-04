@@ -47,6 +47,7 @@ public class PanSurfaceView extends GLSurfaceView {
 				break;
 			case MotionEvent.ACTION_UP:
 			case MotionEvent.ACTION_POINTER_UP:
+			case MotionEvent.ACTION_CANCEL:
 				//TODO Should link this to original DOWN position
 				type = Panput.TOUCH_UP;
 				break;
