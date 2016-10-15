@@ -72,4 +72,8 @@ public final class JetPansound extends Pansound {
 			throw new Panception("Failed to play Jet file");
 		}
 	}
+	
+	@Override
+	protected final void runDestroy() {
+	}
 }

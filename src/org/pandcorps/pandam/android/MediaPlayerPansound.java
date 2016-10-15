@@ -70,4 +70,9 @@ public class MediaPlayerPansound extends Pansound {
 		mediaPlayer.seekTo(0);
 		mediaPlayer.start();
 	}
+	
+	@Override
+	protected final void runDestroy() {
+		mediaPlayer.release();
+	}
 }

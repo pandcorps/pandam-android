@@ -107,4 +107,9 @@ public class SoundPoolPansound extends Pansound {
 			soundPool.setLoop(streamId, repeatCount);
 		}
 	}
+	
+	@Override
+	protected final void runDestroy() {
+		soundPool.unload(sampleId);
+	}
 }

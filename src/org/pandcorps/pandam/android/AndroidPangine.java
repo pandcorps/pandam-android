@@ -283,7 +283,8 @@ public class AndroidPangine extends GlPangine {
 	
     @Override
 	protected void onDestroy() {
-    	for (final String cacheFile : Coltil.unnull(cacheFiles)) {
+    	// There have been ConcurrentModificationExceptions here; so use copy
+    	for (final String cacheFile : Coltil.copy(cacheFiles)) {
     		new File(cacheFile).delete();
     	}
     	/*if (mediaPlayer != null) {
