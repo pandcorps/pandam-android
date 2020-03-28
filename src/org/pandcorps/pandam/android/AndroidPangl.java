@@ -33,7 +33,7 @@ public final class AndroidPangl extends Pangl {
 	private final GL11 gl11;
 	
 	protected AndroidPangl(final GL10 gl) {
-		super(GL10.GL_ALPHA_TEST, GL11.GL_ARRAY_BUFFER, GL11.GL_ARRAY_BUFFER_BINDING, GL10.GL_BLEND, GL10.GL_COLOR_BUFFER_BIT, GL10.GL_DEPTH_BUFFER_BIT, GL10.GL_DEPTH_TEST, GL10.GL_FLOAT, GL10.GL_GREATER, GL10.GL_LESS, GL10.GL_MODELVIEW, GL10.GL_NEAREST, GL10.GL_NO_ERROR, GL10.GL_ONE_MINUS_SRC_ALPHA, GL10.GL_PROJECTION, -1, GL10.GL_RGB, GL10.GL_RGBA, GL10.GL_SRC_ALPHA, GL11.GL_STATIC_DRAW, GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_COORD_ARRAY, GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_TRIANGLES, GL10.GL_UNSIGNED_BYTE, GL10.GL_VERTEX_ARRAY);
+		super(GL10.GL_ALPHA_TEST, GL11.GL_ARRAY_BUFFER, GL11.GL_ARRAY_BUFFER_BINDING, GL10.GL_BLEND, GL10.GL_COLOR_ARRAY, GL10.GL_COLOR_BUFFER_BIT, GL10.GL_DEPTH_BUFFER_BIT, GL10.GL_DEPTH_TEST, GL10.GL_FLOAT, GL10.GL_GREATER, GL10.GL_LESS, GL10.GL_MODELVIEW, GL10.GL_NEAREST, GL10.GL_NO_ERROR, GL10.GL_ONE_MINUS_SRC_ALPHA, GL10.GL_PROJECTION, -1, GL10.GL_RGB, GL10.GL_RGBA, GL10.GL_SRC_ALPHA, GL11.GL_STATIC_DRAW, GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_COORD_ARRAY, GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_TRIANGLES, GL10.GL_UNSIGNED_BYTE, GL10.GL_VERTEX_ARRAY);
 		this.gl = gl;
 		gl11 = gl instanceof GL11 ? (GL11) gl : null;
 	}
@@ -88,6 +88,29 @@ public final class AndroidPangl extends Pangl {
 	private final static float toFloat(final float f) {
 		return (f - Byte.MIN_VALUE) / 255f;
 	}
+	
+	@Override
+    public final void glColor4ub(final byte red, final byte green, final byte blue, final byte alpha) {
+        // Acts like (byte) 255 is 255, even though it's actually -1
+        gl.glColor4f(toFloatu(red), toFloatu(green), toFloatu(blue), toFloatu(alpha));
+    }
+	
+	private final static float toFloatu(float f) {
+	    if (f < 0) {
+	        f += 256;
+	    }
+	    return f / 255f;
+	}
+	
+	@Override
+    public final void glColorPointer(final int size, final int stride, final FloatBuffer pointer) {
+        gl11.glColorPointer(size, GL10.GL_FLOAT, stride, pointer);
+    }
+    
+    @Override
+    public final void glColorPointer(final int size, final int type, final int stride, final int offset) {
+        gl11.glColorPointer(size, type, stride, offset);
+    }
 	
 	@Override
 	public final void glDeleteBuffers(final int buffer) {
@@ -212,6 +235,11 @@ public final class AndroidPangl extends Pangl {
 	@Override
 	public final void glViewport(final int x, final int y, final int width, final int height) {
 		gl.glViewport(x, y, width, height);
+	}
+	
+	@Override
+    public final boolean isOpenGl15Supported() {
+	    return false;
 	}
 	
 	@Override

@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2009-2016, Andrew M. Martin
+Copyright (c) 2009-2020, Andrew M. Martin
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following
@@ -20,56 +20,14 @@ PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY
 TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 */
-package org.pandcorps.pandam.android;
+package org.pandcorps.botsnbolts;
 
-import java.io.*;
+import org.pandcorps.pandam.*;
+import org.pandcorps.pandam.android.*;
 
-import org.pandcorps.core.*;
-
-import android.graphics.*;
-import android.graphics.BitmapFactory.*;
-import android.graphics.Bitmap.*;
-
-public final class AndroidImgFactory extends ImgFactory {
+public final class BotsnBoltsAct extends PanActivity {
 	@Override
-	public final Img load(final InputStream in) throws Exception {
-	    if (in == null) {
-	        throw new Exception("Attempted to load a null InputStream into an Img");
-	    }
-		final Options opts = new Options();
-		opts.inPreferredConfig = Config.ARGB_8888;
-		//opts.inMutable = true; // NoSuchFieldError, should maybe attempt with reflection
-		return new AndroidImg(BitmapFactory.decodeStream(in, null, opts));
-		//return new AndroidImg(BitmapFactory.decodeStream(in));
-	}
-	
-	@Override
-	public final Img create(final int w, final int h) {
-		return new AndroidImg(Bitmap.createBitmap(w, h, Config.ARGB_8888));
-	}
-	
-	@Override
-	public final int getDataElement(final int[] rgb, final int i) {
-		return Color.argb(rgb[3], rgb[0], rgb[1], rgb[2]);
-	}
-	
-	@Override
-	public final int getRed(final int rgb) {
-		return Color.red(rgb);
-	}
-	
-	@Override
-	public final int getGreen(final int rgb) {
-		return Color.green(rgb);
-	}
-	
-	@Override
-	public final int getBlue(final int rgb) {
-		return Color.blue(rgb);
-	}
-	
-	@Override
-	public final int getAlpha(final int rgb) {
-		return Color.alpha(rgb);
+	protected final Pangame newGame() {
+		return new BotsnBoltsGame();
 	}
 }
