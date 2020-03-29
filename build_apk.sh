@@ -19,6 +19,7 @@ cd $PROJ
 echo Preparing environment for $GAME_NAME
 META_FILES=(
   "AndroidManifest.xml"
+  "res/values/strings.xml"
 )
 for META_FILE in ${META_FILES[@]}; do
   cp game/$GAME_PACKAGE/$META_FILE $META_FILE
@@ -27,10 +28,25 @@ done
 $SDK_BUILD/aapt package -f -m -J $PROJ/src -M $PROJ/AndroidManifest.xml -S $PROJ/res -I $ANDROID_JAR
 echo Running javac for Android-specific java files
 "$JDK_PATH"/javac -d obj -cp "$GAME_JAR" -bootclasspath $ANDROID_JAR src/org/pandcorps/$GAME_PACKAGE/*.java src/org/pandcorps/pandam/android/*.java
+if [[ $? != 0 ]]; then
+    echo Error running javac
+    exit 1
+fi
+
 echo Running dx
 $SDK_BUILD/dx.bat --dex --output=$PROJ/bin/classes.dex $GAME_JAR $PROJ/obj
+if [[ $? != 0 ]]; then
+    echo Error running dx
+    exit 1
+fi
+
 echo Creating unaligned APK
 $SDK_BUILD/aapt package -f -m -F $PROJ/bin/$GAME_NAME.unaligned.apk -M $PROJ/AndroidManifest.xml -S $PROJ/res -I $ANDROID_JAR
+if [[ $? != 0 ]]; then
+    echo Error creating unaligned APK
+    exit 1
+fi
+
 cp $PROJ/bin/classes.dex .
 $SDK_BUILD/aapt add $PROJ/bin/$GAME_NAME.unaligned.apk classes.dex
 

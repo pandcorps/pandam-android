@@ -71,6 +71,18 @@ public class MediaPlayerPansound extends Pansound {
 		mediaPlayer.start();
 	}
 	
+	protected final void pause() {
+	    mediaPlayer.pause();
+	}
+	
+	protected final void resume() {
+        mediaPlayer.start();
+    }
+	
+	protected final void stop() {
+	    mediaPlayer.stop();
+	}
+	
 	@Override
 	protected final void runDestroy() {
 		mediaPlayer.release();

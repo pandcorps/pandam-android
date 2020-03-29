@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2009-2016, Andrew M. Martin
+Copyright (c) 2009-2020, Andrew M. Martin
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following
@@ -200,7 +200,16 @@ public class AndroidPangine extends GlPangine {
     }
     
     protected final static CopyResult copyResourceToFile(final String loc) throws Exception {
-    	InputStream in = null;
+        InputStream in = null;
+        try {
+            in = Iotil.getResourceInputStream(loc);
+            return copyStreamToFile(loc, in);
+        } finally {
+            Iotil.close(in);
+        }
+    }
+    
+    protected final static CopyResult copyStreamToFile(final String loc, final InputStream in) throws Exception {
     	OutputStream out = null;
     	try {
     		String tmpFileName = loc.replace('/', '_');
@@ -216,7 +225,6 @@ public class AndroidPangine extends GlPangine {
     		final int len = 1024;
     		int ret;
     		final byte[] buf = new byte[len];
-    		in = Iotil.getResourceInputStream(loc);
     		//info("Getting resource input stream");
     		long size = 0;
     		while ((ret = in.read(buf)) >= 0) {
@@ -230,7 +238,6 @@ public class AndroidPangine extends GlPangine {
     		cacheFiles.add(tmpFileName);
     		return new CopyResult(tmpFileName, size);
     	} finally {
-    		Iotil.close(in);
     		Iotil.close(out);
     	}
     }

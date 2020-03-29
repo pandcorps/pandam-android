@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2009-2016, Andrew M. Martin
+Copyright (c) 2009-2020, Andrew M. Martin
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following
@@ -22,6 +22,8 @@ POSSIBILITY OF SUCH DAMAGE.
 */
 package org.pandcorps.pandam.android;
 
+import java.io.*;
+
 import org.pandcorps.pandam.*;
 
 import android.media.*;
@@ -31,8 +33,17 @@ public final class JetPansound extends Pansound {
 	private final String loc;
 	private final String fileName;
 	
+	protected JetPansound(final String loc, final InputStream in) {
+	    this.loc = loc;
+	    try {
+	        fileName = AndroidPangine.copyStreamToFile(loc, in).fileName;
+	    } catch (final Exception e) {
+	        throw Panception.get(e);
+	    }
+    }
+	
 	protected JetPansound(final String loc) {
-		this.loc = loc.substring(0, loc.length() - 3) + "jet";
+		this.loc = loc;
 		fileName = copyResourceToFile();
 	}
 	
