@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2009-2016, Andrew M. Martin
+Copyright (c) 2009-2020, Andrew M. Martin
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following
@@ -80,7 +80,9 @@ public class MediaPlayerPansound extends Pansound {
     }
 	
 	protected final void stop() {
-	    mediaPlayer.stop();
+	    mediaPlayer.pause();
+	    mediaPlayer.seekTo(0);
+	    //mediaPlayer.stop(); // Can't restart after this
 	}
 	
 	@Override
