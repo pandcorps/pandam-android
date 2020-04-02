@@ -20,31 +20,48 @@ echo Preparing environment for $GAME_NAME
 META_FILES=(
   "AndroidManifest.xml"
   "res/values/strings.xml"
+  "res/drawable-ldpi/ic_launcher.png"
+  "res/drawable-mdpi/ic_launcher.png"
+  "res/drawable-tvdpi/ic_launcher.png"
+  "res/drawable-hdpi/ic_launcher.png"
+  "res/drawable-xhdpi/ic_launcher.png"
+  "res/drawable-xxhdpi/ic_launcher.png"
+  "res/drawable-xxxhdpi/ic_launcher.png"
 )
 for META_FILE in ${META_FILES[@]}; do
   cp game/$GAME_PACKAGE/$META_FILE $META_FILE
+  if [[ $? != 0 ]]; then
+    echo Error preparing $META_FILE
+    exit 1
+  fi
 done
 
+echo Running aapt package
 $SDK_BUILD/aapt package -f -m -J $PROJ/src -M $PROJ/AndroidManifest.xml -S $PROJ/res -I $ANDROID_JAR
+if [[ $? != 0 ]]; then
+  echo Error running aapt package
+  exit 1
+fi
+
 echo Running javac for Android-specific java files
 "$JDK_PATH"/javac -d obj -cp "$GAME_JAR" -bootclasspath $ANDROID_JAR src/org/pandcorps/$GAME_PACKAGE/*.java src/org/pandcorps/pandam/android/*.java
 if [[ $? != 0 ]]; then
-    echo Error running javac
-    exit 1
+  echo Error running javac
+  exit 1
 fi
 
 echo Running dx
 $SDK_BUILD/dx.bat --dex --output=$PROJ/bin/classes.dex $GAME_JAR $PROJ/obj
 if [[ $? != 0 ]]; then
-    echo Error running dx
-    exit 1
+  echo Error running dx
+  exit 1
 fi
 
 echo Creating unaligned APK
 $SDK_BUILD/aapt package -f -m -F $PROJ/bin/$GAME_NAME.unaligned.apk -M $PROJ/AndroidManifest.xml -S $PROJ/res -I $ANDROID_JAR
 if [[ $? != 0 ]]; then
-    echo Error creating unaligned APK
-    exit 1
+  echo Error creating unaligned APK
+  exit 1
 fi
 
 cp $PROJ/bin/classes.dex .
@@ -54,13 +71,12 @@ if [ "$GAME_JAR" -nt "work/org" ]; then
   echo Removing previous jar contents
   rm -Rf work/org
   echo Extracting jar contents
-  unzip $GAME_JAR -o -d work
+  unzip -o $GAME_JAR -d work
 fi
 
 echo Adding jar contents to APK
 cd work
-for FILE in $(find org -type f | grep -v .class)
-do
+for FILE in $(find org -type f | grep -v .class); do
   $SDK_BUILD/aapt add $PROJ/bin/$GAME_NAME.unaligned.apk "$FILE"
 done
 cd ..
