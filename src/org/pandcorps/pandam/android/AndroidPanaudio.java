@@ -38,17 +38,20 @@ public final class AndroidPanaudio extends Panaudio {
 	    if (location.endsWith(".jet")) {
 	        return new JetPansound(location);
 	    }
-	    final String jetLocation = location.substring(0, location.length() - 3) + "jet";
+	    final String jetLocation = JetPansound.toJetLocation(location);
 	    InputStream in = null;
         try {
             in = Iotil.getResourceInputStream(jetLocation);
-            if (jetLocation != null) {
-                return new JetPansound(location, in);
+            if (in != null) {
+                return new JetPansound(jetLocation, in);
             }
         } catch (final Exception e) {
             // No .jet version available, just use the given location
         } finally {
             Iotil.close(in);
+        }
+        if (location.endsWith(".mid")) {
+            return new JetPansound(location);
         }
 		return new MediaPlayerPansound(location);
 	}

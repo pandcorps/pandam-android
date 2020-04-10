@@ -24,6 +24,9 @@ package org.pandcorps.pandam.android;
 
 import java.io.*;
 
+import org.pandcorps.core.*;
+import org.pandcorps.core.aud.*;
+import org.pandcorps.core.io.*;
 import org.pandcorps.pandam.*;
 
 import android.media.*;
@@ -48,11 +51,39 @@ public final class JetPansound extends Pansound {
 	}
 	
 	private final String copyResourceToFile() {
+	    if (loc.endsWith("mid")) {
+	        return convertMidToJetFile();
+	    } else {
+	        return copyJetToFile();
+	    }
+	}
+	
+	private final String copyJetToFile() {
 		try {
 			return AndroidPangine.copyResourceToFile(loc).fileName;
 		} catch (final Exception e) {
     		throw Panception.get(e);
     	}
+	}
+	
+	private final String convertMidToJetFile() {
+	    InputStream in = null;
+	    NamedOutputStream out = null;
+        try {
+            in = Iotil.getResourceInputStream(loc);
+            out = AndroidPangine.getCopyOutputStream(toJetLocation(loc));
+            Mid2Jet.convert(in, out);
+            return out.getName();
+        } catch (final Exception e) {
+            throw Panception.get(e);
+        } finally {
+            Iotil.close(out);
+            Iotil.close(in);
+        }
+	}
+	
+	protected final static String toJetLocation(final String midLocation) {
+	    return midLocation.substring(0, midLocation.length() - 3) + "jet";
 	}
 	
 	@Override

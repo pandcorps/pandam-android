@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2009-2016, Andrew M. Martin
+Copyright (c) 2009-2020, Andrew M. Martin
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following
@@ -202,6 +202,12 @@ public final class AndroidPangl extends Pangl {
 	}
 	
 	@Override
+    public final void glReadPixels(final int x, final int y, final int width, final int height,
+            final int format, final int type, final IntBuffer pixels) {
+        gl.glReadPixels(x, y, width, height, format, type, pixels);
+    }
+	
+	@Override
 	public final void glTexCoordPointer(final int size, final int stride, final FloatBuffer pointer) {
 		gl.glTexCoordPointer(size, GL10.GL_FLOAT, stride, pointer);
 	}
@@ -216,6 +222,12 @@ public final class AndroidPangl extends Pangl {
 			final int width, final int height, final int border, final int format, final int type, final ByteBuffer pixels) {
 		gl.glTexImage2D(target, level, internalFormat, width, height, border, format, type, pixels);
 	}
+	
+	@Override
+    public final void glTexImage2D(final int target, final int level, final int internalFormat,
+            final int width, final int height, final int border, final int format, final int type, final IntBuffer pixels) {
+        gl.glTexImage2D(target, level, internalFormat, width, height, border, format, type, pixels);
+    }
 	
 	@Override
 	public final void glTexParameteri(final int target, final int pname, final int param) {
