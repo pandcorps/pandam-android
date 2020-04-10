@@ -26,6 +26,7 @@ import java.io.*;
 import java.util.*;
 
 import org.pandcorps.core.*;
+import org.pandcorps.core.io.*;
 import org.pandcorps.pandam.*;
 import org.pandcorps.pandam.impl.*;
 
@@ -209,19 +210,23 @@ public class AndroidPangine extends GlPangine {
         }
     }
     
+    protected final static NamedOutputStream getCopyOutputStream(final String loc) throws Exception {
+		String tmpFileName = loc.replace('/', '_');
+		
+		//out = context.openFileOutput(tmpFileName, Context.MODE_PRIVATE);
+		String dir = context.getCacheDir().getAbsolutePath();
+		if (!dir.endsWith("/")) {
+			dir += "/";
+		}
+		tmpFileName = dir + tmpFileName;
+		return new NamedOutputStream(new FileOutputStream(tmpFileName), tmpFileName);
+    }
+    
     protected final static CopyResult copyStreamToFile(final String loc, final InputStream in) throws Exception {
-    	OutputStream out = null;
-    	try {
-    		String tmpFileName = loc.replace('/', '_');
-    		
-    		//out = context.openFileOutput(tmpFileName, Context.MODE_PRIVATE);
-    		String dir = context.getCacheDir().getAbsolutePath();
-    		if (!dir.endsWith("/")) {
-    			dir += "/";
-    		}
-    		tmpFileName = dir + tmpFileName;
-    		out = new FileOutputStream(tmpFileName);
-    		
+        NamedOutputStream out = null;
+        try {
+            out = getCopyOutputStream(loc);
+            final String tmpFileName = out.getName();
     		final int len = 1024;
     		int ret;
     		final byte[] buf = new byte[len];

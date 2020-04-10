@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2009-2016, Andrew M. Martin
+Copyright (c) 2009-2020, Andrew M. Martin
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following
@@ -49,7 +49,6 @@ public abstract class PanActivity extends Activity {
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		activity = this;
-		ImgFactory.setFactory(new AndroidImgFactory());
 		new AndroidPangine();
 		super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
