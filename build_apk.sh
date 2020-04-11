@@ -76,9 +76,7 @@ fi
 
 echo Adding jar contents to APK
 cd work
-for FILE in $(find org -type f | grep -v .class); do
-  $SDK_BUILD/aapt add $PROJ/bin/$GAME_NAME.unaligned.apk "$FILE"
-done
+find org -type f | grep -v .class | xargs $SDK_BUILD/aapt add $PROJ/bin/$GAME_NAME.unaligned.apk
 cd ..
 
 echo Aligning APK
