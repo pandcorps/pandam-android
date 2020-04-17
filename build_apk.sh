@@ -81,6 +81,13 @@ cd ..
 
 echo Aligning APK
 $SDK_BUILD/zipalign -f 4 $PROJ/bin/$GAME_NAME.unaligned.apk $PROJ/bin/$GAME_NAME.apk
+
 echo Signing APK
-$SDK_BUILD/apksigner.bat sign --ks $JKS $PROJ/bin/$GAME_NAME.apk
+while true; do
+  $SDK_BUILD/apksigner.bat sign --ks $JKS $PROJ/bin/$GAME_NAME.apk
+  if [[ $? == 0 ]]; then
+    break
+  fi
+done
+
 echo Finished
