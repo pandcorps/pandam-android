@@ -1,12 +1,14 @@
 echo Starting
 export GAME_PACKAGE=$1
 export GAME_NAME=$2
-export PROJ=/c/Users/am202/workspace/pandam-android
+export PROJ=/c/Git/pandam-android
 export GAME_JAR=$PROJ/lib/$GAME_NAME.jar
-export JDK_PATH="/c/Program Files/Java/jdk1.8.0_92/bin"
+export JAVA_HOME="/c/Program Files/Java/jdk1.8.0_251"
+export APKSIGNER_JAVA_HOME="/c/Program Files/Java/jdk-9.0.4"
+export JDK_PATH="$JAVA_HOME/bin"
 export SDK_PATH=/c/Users/am202/AppData/Local/Android/Sdk
-export ANDROID_JAR=$SDK_PATH/platforms/android-27/android.jar
-export SDK_BUILD=$SDK_PATH/build-tools/27.0.3
+export ANDROID_JAR=$SDK_PATH/platforms/android-30/android.jar
+export SDK_BUILD=$SDK_PATH/build-tools/30.0.0
 export JKS=/c/Personal/Games/Platform/release.nfo.jks
 
 if [ -z "$GAME_NAME" ]; then
@@ -15,6 +17,24 @@ if [ -z "$GAME_NAME" ]; then
 fi
 
 cd $PROJ
+
+DIRS=(
+  "res"
+  "res/values"
+  "res/drawable-ldpi"
+  "res/drawable-mdpi"
+  "res/drawable-tvdpi"
+  "res/drawable-hdpi"
+  "res/drawable-xhdpi"
+  "res/drawable-xxhdpi"
+  "res/drawable-xxxhdpi"
+  "obj"
+)
+for DIR in ${DIRS[@]}; do
+  if [ ! -d "$DIR" ]; then
+    mkdir "$DIR"
+  fi
+done
 
 echo Preparing environment for $GAME_NAME
 META_FILES=(
@@ -44,7 +64,7 @@ if [[ $? != 0 ]]; then
 fi
 
 echo Running javac for Android-specific java files
-"$JDK_PATH"/javac -d obj -cp "$GAME_JAR" -bootclasspath $ANDROID_JAR src/org/pandcorps/$GAME_PACKAGE/*.java src/org/pandcorps/pandam/android/*.java
+"$JDK_PATH"/javac -d obj -cp "$GAME_JAR" -source 1.8 -target 1.8 -bootclasspath $ANDROID_JAR src/org/pandcorps/$GAME_PACKAGE/*.java src/org/pandcorps/pandam/android/*.java
 if [[ $? != 0 ]]; then
   echo Error running javac
   exit 1
@@ -83,6 +103,7 @@ echo Aligning APK
 $SDK_BUILD/zipalign -f 4 $PROJ/bin/$GAME_NAME.unaligned.apk $PROJ/bin/$GAME_NAME.apk
 
 echo Signing APK
+export JAVA_HOME="$APKSIGNER_JAVA_HOME"
 while true; do
   $SDK_BUILD/apksigner.bat sign --ks $JKS $PROJ/bin/$GAME_NAME.apk
   if [[ $? == 0 ]]; then
