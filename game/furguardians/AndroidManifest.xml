@@ -6,7 +6,7 @@
 
     <uses-sdk
         android:minSdkVersion="8"
-        android:targetSdkVersion="28" />
+        android:targetSdkVersion="29" />
     
     <!-- Added this. Is it right? -->
     <!--<uses-feature android:name="android.hardware.faketouch.multitouch.distinct" android:required="true" />-->
