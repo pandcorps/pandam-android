@@ -46,6 +46,7 @@ public class AndroidPangine extends GlPangine {
 		engine = this;
 		audio = new AndroidPanaudio();
 		touchYInverted = true;
+		setColorArrayNumChannels(4);
 	}
 	
 	@Override
