@@ -104,7 +104,7 @@ public final class AndroidPangl extends Pangl {
 	
 	@Override
     public final void glColorPointer(final int size, final int stride, final FloatBuffer pointer) {
-        gl11.glColorPointer(size, GL10.GL_FLOAT, stride, pointer);
+        gl.glColorPointer(size, GL10.GL_FLOAT, stride, pointer);
     }
     
     @Override
