@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2009-2020, Andrew M. Martin
+Copyright (c) 2009-2021, Andrew M. Martin
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following
@@ -60,11 +60,15 @@ public abstract class PanActivity extends Activity {
         view.setRenderMode(PanSurfaceView.RENDERMODE_CONTINUOUSLY);
         
         System.setProperty("user.dir", getFilesDir().getAbsolutePath());
+        Iotil.setOutputStreamFactory(new AndroidOutputStreamFactory());
         Iotil.setWriterFactory(new AndroidWriterFactory());
         Iotil.setInputStreamFactory(new AndroidInputStreamFactory());
         Iotil.setResourceChecker(new AndroidResourceChecker());
         Iotil.setResourceDeleter(new AndroidResourceDeleter());
         Iotil.setResourceLister(new AndroidResourceLister());
+        Iotil.setFileGetter(new AndroidFileGetter());
+        Iotil.setDirectoryGetter(new AndroidDirectoryGetter());
+        Iotil.setDirectoryMaker(new AndroidDirectoryMaker());
         
         setSize();
         setTopOffset();
@@ -169,23 +173,93 @@ public abstract class PanActivity extends Activity {
 		view.onPause();
 	}
 	
+	private final OutputStream openOutputStream(final String location) {
+	    try {
+    	    int i = location.indexOf(File.separatorChar);
+    	    if (i < 0) {
+    	        return openFileOutput(location, MODE_PRIVATE);
+    	    }
+    	    return new FileOutputStream(getFile(location));
+	    } catch (final IOException e) {
+	        throw new RuntimeException(e);
+	    }
+	}
+	
+	private final InputStream openInputStream(final String location) {
+        try {
+            int i = location.indexOf(File.separatorChar);
+            if (i < 0) {
+                return openFileInput(location);
+            }
+            return new FileInputStream(getFile(location));
+        } catch (final IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+	
+	private final File getFile(final String location) {
+	    return mkpath(location, false);
+	}
+	
+	private final File mkdirs(final String location) {
+	    return mkpath(location, true);
+	}
+	
+	private final File mkpath(final String location, final boolean dir) {
+        final char sep = File.separatorChar;
+        int next = location.indexOf(sep, 0);
+        if (next < 0) {
+            final File file = new File(getFilesDir(), location);
+            if (dir) {
+                file.mkdirs();
+            }
+            return file;
+        }
+        File file = new File(getFilesDir(), location.substring(0, next));
+        file.mkdirs();
+        int i;
+        while (true) {
+            i = next + 1;
+            next = location.indexOf(sep, i);
+            final String name = (next < 0) ? location.substring(i) : location.substring(i, next);
+            file = new File(file, name);
+            if (!dir && (next < 0)) {
+                return file;
+            }
+            file.mkdirs();
+            if (next < 0) {
+                return file;
+            }
+        }
+    }
+	
+	private final class AndroidOutputStreamFactory implements OutputStreamFactory {
+        @Override
+        public final OutputStream newOutputStream(final String location) throws Exception {
+            return openOutputStream(location);
+        }
+    }
+	
 	private final class AndroidWriterFactory implements WriterFactory {
 		@Override
 		public final Writer newWriter(final String location) throws Exception {
-			return new OutputStreamWriter(openFileOutput(location, Context.MODE_PRIVATE));
+			return new OutputStreamWriter(openOutputStream(location));
 		}
 	}
 	
 	private final class AndroidInputStreamFactory implements InputStreamFactory {
 		@Override
 		public final InputStream newInputStream(final String location) throws Exception {
-			return openFileInput(location);
+			return openInputStream(location);
 		}
 	}
 	
 	private final class AndroidResourceChecker implements ResourceChecker {
 		@Override
 		public final boolean exists(final String location) {
+		    if (getFile(location).exists()) {
+		        return true;
+		    }
 			for (final String f : fileList()) {
 				if (f.equals(location)) {
 					return true;
@@ -209,14 +283,25 @@ public abstract class PanActivity extends Activity {
 		}
 	}
 	
-	/*protected final File getFile(final String name) {
-		for (final File f : getFilesDir().listFiles()) {
-			info("Looking for " + name + "; checking " + f.getName());
-			if (name.equals(f.getName())) {
-				return f;
-			}
-		}
-		info("Could not find " + name + "; returning null");
-		return null;
-	}*/
+	private final class AndroidFileGetter implements FileGetter {
+        @Override
+        public final File getFile(final String location) {
+            return PanActivity.this.getFile(location);
+        }
+    }
+	
+	private final class AndroidDirectoryGetter implements DirectoryGetter {
+        @Override
+        public final File getDir(final String location) {
+            return ".".equals(location) ? getFilesDir() : mkdirs(location);
+        }
+    }
+	
+	private final class AndroidDirectoryMaker implements DirectoryMaker {
+        @Override
+        public final boolean mkdirs(final String location) {
+            PanActivity.this.mkdirs(location);
+            return true;
+        }
+    }
 }
