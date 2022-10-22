@@ -63,7 +63,11 @@ if [[ $? != 0 ]]; then
   exit 1
 fi
 
-echo Running javac for Android-specific java files
+echo Running javac for Android-specific java files with cp "$GAME_JAR"
+if [ ! -f "$GAME_JAR" ]; then
+  echo "$GAME_JAR" not found
+  exit 1
+fi
 "$JDK_PATH"/javac -d obj -cp "$GAME_JAR" -source 1.8 -target 1.8 -bootclasspath $ANDROID_JAR src/org/pandcorps/$GAME_PACKAGE/*.java src/org/pandcorps/pandam/android/*.java
 if [[ $? != 0 ]]; then
   echo Error running javac
