@@ -54,7 +54,9 @@ public final class PanRenderer implements Renderer {
 
 	@Override
 	public final void onSurfaceChanged(final GL10 gl, final int width, int height) {
-		//TODO... Or maybe nothing needs to be done
+	    AndroidPangine.desktopWidth = width;
+        AndroidPangine.desktopHeight = height;
+        AndroidPangine.engine.forceDisplaySize(width, height);
 	}
 
 	@Override

@@ -83,9 +83,18 @@ public abstract class PanActivity extends Activity {
 		}
 	}
 	
-	private final void setSize() {
+	private final void setSize() { // NOTE: PanRenderer.onSurfaceChanged can change the size later during app startup
 		if (AndroidPangine.desktopWidth > 0) {
 			return;
+		}
+		try {
+		    final WindowManager windowManager = getWindowManager();
+		    final Object windowMetrics = WindowManager.class.getMethod("getCurrentWindowMetrics").invoke(windowManager);
+		    final Rect rect = (Rect) windowMetrics.getClass().getMethod("getBounds").invoke(windowMetrics);
+		    AndroidPangine.desktopWidth = rect.right;
+		    AndroidPangine.desktopHeight = rect.top;
+		} catch (final Throwable e) {
+		    // Just try a technique below
 		}
         try {
         	final Point size = new Point();
