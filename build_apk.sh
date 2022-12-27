@@ -91,12 +91,13 @@ fi
 cp $PROJ/bin/classes.dex .
 $SDK_BUILD/aapt add $PROJ/bin/$GAME_NAME.unaligned.apk classes.dex
 
-if [ "$GAME_JAR" -nt "work/org" ]; then
+# If rebuilding multiple jars and then rebuilding multiple APKs, this gets confused; can keep work directory from first APK; also need to track which jar was used to create work and re-create work if jar name is different now
+#if [ "$GAME_JAR" -nt "work/org" ]; then
   echo Removing previous jar contents
   rm -Rf work/org
   echo Extracting jar contents
   unzip -o $GAME_JAR -d work
-fi
+#fi
 
 echo Adding jar contents to APK
 cd work
