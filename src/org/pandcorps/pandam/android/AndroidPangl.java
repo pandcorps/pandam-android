@@ -111,6 +111,11 @@ public final class AndroidPangl extends Pangl {
     public final void glColorPointer(final int size, final int type, final int stride, final int offset) {
         gl11.glColorPointer(size, type, stride, offset);
     }
+    
+    @Override
+    public final void glCopyTexImage2D(final int target, final int level, final int internalFormat, final int x, final int y, final int width, final int height, final int border) {
+        gl11.glCopyTexImage2D(target, level, internalFormat, x, y, width, height, border);
+    }
 	
 	@Override
 	public final void glDeleteBuffers(final int buffer) {
