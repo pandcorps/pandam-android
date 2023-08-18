@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2009-2021, Andrew M. Martin
+Copyright (c) 2009-2022, Andrew M. Martin
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following
@@ -98,94 +98,6 @@ public class AndroidPangine extends GlPangine {
   	    return context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN_MULTITOUCH);
   	}
     
-    //public final void playMusic(/*final*/ String loc) {
-    	/*InputStream in = null;
-    	Parcel parcel = null;
-    	ParcelFileDescriptor pfd = null;
-    	AssetFileDescriptor afd = null;
-    	try {
-    		parcel = Parcel.obtain();
-    		final int len = 1024;
-    		int ret;
-    		final byte[] buf = new byte[len];
-    		in = Iotil.getResourceInputStream(loc);
-    		while ((ret = in.read(buf)) >= 0) {
-    			parcel.writeByteArray(buf, 0, ret);
-    		}
-    		in.close();
-    		parcel.setDataPosition(0);
-    		info("parcel data size: " + parcel.dataSize());
-    		pfd = parcel.readFileDescriptor();
-    		info("pfd: " + pfd);
-	    	//final File f = new File(Iotil.class.getClassLoader().getResource(loc).toURI());
-	    	//pfd = ParcelFileDescriptor.open(f, ParcelFileDescriptor.MODE_READ_ONLY);
-	    	afd = new AssetFileDescriptor(pfd, 0, AssetFileDescriptor.UNKNOWN_LENGTH);
-	    	info("afd: " + afd);
-	    	final int soundId = soundPool.load(afd, 1);
-	    	musicStreamId = soundPool.play(soundId, 1, 1, 1, -1, 1);
-    	} catch (final Exception e) {
-    		throw Panception.get(e);
-    	} finally {
-    		Iotil.close(in);
-    		//Iotil.close(afd); // Compiles, but run-time error
-    		close(afd);
-    		Iotil.close(pfd);
-    		recycle(parcel);
-    	}*/
-    	
-    	/*InputStream in = null;
-    	ParcelFileDescriptor pfd = null, pfdOut = null;
-    	AssetFileDescriptor afd = null;
-    	OutputStream out = null;
-    	try {
-    		final ParcelFileDescriptor[] pfds = ParcelFileDescriptor.createPipe();
-    		pfd = pfds[0];
-    		pfdOut = pfds[1];
-    		out = new ParcelFileDescriptor.AutoCloseOutputStream(pfdOut);
-    		final int len = 1024;
-    		int ret;
-    		final byte[] buf = new byte[len];
-    		//in = Iotil.getResourceInputStream(loc);
-    		info("Getting resource input stream");
-    		in = Iotil.getResourceInputStream("org/pandcorps/platform/res/music/chimes.wav");
-    		long size = 0;
-    		while ((ret = in.read(buf)) >= 0) {
-    			out.write(buf, 0, ret);
-    			size += ret;
-    			info("Piping, size " + size);
-    		}
-    		in.close();
-    		out.close();
-    		info("Opening AssetFileDescriptor");
-	    	afd = new AssetFileDescriptor(new PanParcelFileDescriptor(pfd, size), 0, size);
-	    	info("afd: " + afd);
-	    	//final int soundId = soundPool.load(afd, 1);
-	    	soundPool.load(afd, 1);
-	    	soundPool.setOnLoadCompleteListener(new OnLoadCompleteListener() {
-				@Override
-				public final void onLoadComplete(final SoundPool soundPool, final int sampleId, final int status) {
-					info("Load complete, trying to play");
-					musicStreamId = soundPool.play(sampleId, 1, 1, 1, -1, 1);
-				}});
-	    	//soundPool.load(context, R.raw.chimes, 1); // Works
-	    	//soundPool.load(context, R.raw.happy, 1); // Unable to load sample: (null)|Load complete, trying to play|sample 1 not READY
-	    	//musicStreamId = soundPool.play(soundId, 1, 1, 1, -1, 1);
-    	} catch (final Exception e) {
-    		throw Panception.get(e);
-    	} finally {
-    		Iotil.close(in);
-    		Iotil.close(out);
-    		//Iotil.close(afd); // Compiles, but run-time error
-    		//Iotil.close(pfd);
-    		//Iotil.close(pfdOut);
-    		close(afd);
-    		close(pfd);
-    		close(pfdOut);
-    	}*/
-    //}
-    
-    //private FileInputStream fin = null;
-    
     protected final static class CopyResult {
     	protected final String fileName;
     	protected final long size;
@@ -248,61 +160,12 @@ public class AndroidPangine extends GlPangine {
     	}
     }
     
-    /*private final static class PanParcelFileDescriptor extends ParcelFileDescriptor {
-    	private final long size;
-    	
-		public PanParcelFileDescriptor(final ParcelFileDescriptor wrapped, final long size) {
-			super(wrapped);
-			this.size = size;
-		}
-		
-		@Override
-		public final long getStatSize() {
-			return size;
-		}
-    }
-    
-    private final static void close(final AssetFileDescriptor fd) {
-    	if (fd != null) {
-    		try {
-    			fd.close();
-    		} catch (final Exception e) {
-    			//throw Pantil.toRuntimeException(e);
-    		}
-    	}
-    }
-    
-    private final static void close(final ParcelFileDescriptor fd) {
-    	if (fd != null) {
-    		try {
-    			fd.close();
-    		} catch (final Exception e) {
-    			//throw Pantil.toRuntimeException(e);
-    		}
-    	}
-    }*/
-    
-    /*private final static void recycle(final Parcel parcel) {
-    	if (parcel != null) {
-			parcel.recycle();
-    	}
-    }*/
-    
-    //public final void stopMusic() {
-    	/*mediaPlayer.stop();
-		mediaPlayer.reset();*/
-    	//soundPool.stop(musicStreamId); // Also releases sound from memory?
-    //}
-	
     @Override
 	protected void onDestroy() {
     	// There have been ConcurrentModificationExceptions here; so use copy
     	for (final String cacheFile : Coltil.copy(cacheFiles)) {
     		new File(cacheFile).delete();
     	}
-    	/*if (mediaPlayer != null) {
-    		mediaPlayer.release();
-    	}*/
 	}
 	
     @Override

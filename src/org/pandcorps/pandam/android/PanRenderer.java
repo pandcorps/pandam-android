@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2009-2016, Andrew M. Martin
+Copyright (c) 2009-2023, Andrew M. Martin
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following
@@ -54,9 +54,16 @@ public final class PanRenderer implements Renderer {
 
 	@Override
 	public final void onSurfaceChanged(final GL10 gl, final int width, int height) {
+	    // Sets the actual width/height reported by the device (game can still set up camera to achieve low resolution)
 	    AndroidPangine.desktopWidth = width;
         AndroidPangine.desktopHeight = height;
         AndroidPangine.engine.forceDisplaySize(width, height);
+        // Sets the game's desired width/height (used with setFixedSize in onSurfaceCreated below achieves low resolution)
+        /*
+	    AndroidPangine.desktopWidth = AndroidPangine.engine.getEffectiveWidth();
+        AndroidPangine.desktopHeight = AndroidPangine.engine.getEffectiveHeight();
+        AndroidPangine.engine.forceDisplaySize(AndroidPangine.engine.getEffectiveWidth(), AndroidPangine.engine.getEffectiveHeight());
+        */
 	}
 
 	@Override
