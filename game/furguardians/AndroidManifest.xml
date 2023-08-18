@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.pandcorps.furguardians"
-    android:versionCode="46"
-    android:versionName="1.27.5" >
+    android:versionCode="47"
+    android:versionName="1.27.6" >
 
     <uses-sdk
         android:minSdkVersion="8"
-        android:targetSdkVersion="31" />
+        android:targetSdkVersion="33" />
     
     <!-- Added this. Is it right? -->
     <!--<uses-feature android:name="android.hardware.faketouch.multitouch.distinct" android:required="true" />-->
